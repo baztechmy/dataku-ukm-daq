@@ -13,7 +13,7 @@ export const db = Db.config({
 export const User = db.define('users', {
     user_id: { type: DataTypes.SERIAL, allowNull: false, primaryKey: true },
     user_name: { type: DataTypes.VARCHAR(255), allowNull: false },
-    user_email: { type: DataTypes.VARCHAR(255), allowNull: false },
+    user_email: { type: DataTypes.VARCHAR(255), allowNull: false, unique: true },
     user_phone: { type: DataTypes.VARCHAR(255), allowNull: true },
     user_role: { type: DataTypes.VARCHAR(255), allowNull: false },
     staff_id: { type: DataTypes.VARCHAR(255), allowNull: false },
