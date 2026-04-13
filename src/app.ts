@@ -1,0 +1,18 @@
+// MODULES
+import App from "@harrypoggers25/app-express";
+import ch from "@harrypoggers25/color-utils";
+import cookieParser from 'cookie-parser';
+
+// CONFIGS
+import env from "./configs/env.config";
+App.listen({
+    port: env.PORT,
+    version: '1.0.0 build 1',
+    cors: [env.ORIGIN_URL],
+    beforeListen: async (app) => {
+        app.use(cookieParser());
+    },
+    callback: async (app, server) => {
+    }
+});
+
