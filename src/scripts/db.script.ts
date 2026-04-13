@@ -3,15 +3,13 @@ import ch from "@harrypoggers25/color-utils";
 import bcrypt from "bcrypt-ts";
 
 // CONFIGS
-import { db, User, UserSecret, Gateway, SensorType, Sensor } from "../configs/db.config";
+import { db, User, UserSecret, Gateway, SensorType, Sensor, DataLog } from "../configs/db.config";
 import env from "../configs/env.config";
 
 db.sync({
     alter: true,
-    onSuccessAlter: async () => {
+    onSuccessAlter: async (transaction) => {
         console.log(ch.green('SCRIPT:'), `Altered db. All previous data have been`, ch.red('deleted'));
-
-        const transaction = await db.transaction({ rollbackOnError: true });
 
         const currentDate = new Date();
         const [created_at, updated_at] = [currentDate, currentDate];
@@ -28,7 +26,7 @@ db.sync({
 
             const { user_id, user_email } = user;
             const user_password = bcrypt.hashSync(user_email, env.BCRYPT_SALT);
-            const userSecret = await UserSecret.create({ user_id, user_password });
+            const userSecret = await UserSecret.create({ user_id, user_password }, { transaction });
             if (!userSecret) {
                 console.log(ch.red('SCRIPT ERROR:'), `Failed to create user secret [${data.user_email}]`);
                 return;
@@ -39,6 +37,7 @@ db.sync({
         const gateway = await Gateway.create({ gateway_id, gateway_status_on: true }, { transaction });
         if (!gateway) {
             console.log(ch.red('SCRIPT ERROR:'), `Failed to gateway [470213]`);
+            return;
         }
 
         for (const data of [
@@ -73,7 +72,101 @@ db.sync({
             }
         }
 
-        await transaction.commit();
+        const dataLog = await DataLog.create({
+            dl_raw_data: JSON.stringify({
+                "client_id": "ukmdaq-470213",
+                "imei": "867284067470213",
+                "uptime_s": 32105,
+                "soil": [
+                    {
+                        "addr": 11,
+                        "online": true,
+                        "humidity_pct": 0,
+                        "temperature_c": 28.8,
+                        "failures": 0
+                    },
+                    {
+                        "addr": 12,
+                        "online": true,
+                        "humidity_pct": 0,
+                        "temperature_c": 29.1,
+                        "failures": 0
+                    },
+                    {
+                        "addr": 13,
+                        "online": true,
+                        "humidity_pct": 0,
+                        "temperature_c": 29.2,
+                        "failures": 0
+                    },
+                    {
+                        "addr": 14,
+                        "online": true,
+                        "humidity_pct": 0,
+                        "temperature_c": 29.6,
+                        "failures": 0
+                    }
+                ],
+                "inclino": [
+                    {
+                        "addr": 81,
+                        "online": true,
+                        "roll": -0.36,
+                        "pitch": 0.02,
+                        "yaw": -31.78,
+                        "failures": 0
+                    },
+                    {
+                        "addr": 82,
+                        "online": true,
+                        "roll": 179.8,
+                        "pitch": -0.37,
+                        "yaw": -35.13,
+                        "failures": 0
+                    },
+                    {
+                        "addr": 83,
+                        "online": true,
+                        "roll": 179.59,
+                        "pitch": -0.46,
+                        "yaw": -13.48,
+                        "failures": 0
+                    },
+                    {
+                        "addr": 84,
+                        "online": true,
+                        "roll": -179.45,
+                        "pitch": -0.01,
+                        "yaw": -117.3,
+                        "failures": 0
+                    }
+                ],
+                "vibration": {
+                    "addr": 88,
+                    "online": true,
+                    "ax_g": 0,
+                    "ay_g": 0,
+                    "az_g": 0,
+                    "vx_mm_s": 0,
+                    "vy_mm_s": 0,
+                    "vz_mm_s": 0,
+                    "temperature_c": 38.74,
+                    "failures": 0
+                },
+                "rain": {
+                    "addr": 90,
+                    "online": true,
+                    "rain_mm": 0,
+                    "failures": 0
+                }
+            }),
+            dl_date: new Date(),
+            gateway_id: '470213'
+        }, { transaction });
+        if (!dataLog) {
+            console.log(ch.red('SCRIPT ERROR:'), `Failed to create data log`);
+            return;
+        }
 
         console.log(ch.green('SCRIPT:'), `Altered db. New data have been`, ch.yellow('updated'));
     }
