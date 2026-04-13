@@ -21,7 +21,7 @@ export const createSensorHandler = Route.asyncHandler(async (req, res) => {
 });
 
 export const findSensorHandler = Route.asyncHandler(async (req, res) => {
-    const s_id = +req.params.st_id;
+    const s_id = +req.params.s_id;
     const sensor = await Sensor.findByPk(s_id);
     if (!sensor) throw new Error(`Failed to find sensor [${s_id}]`);
 

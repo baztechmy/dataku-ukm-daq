@@ -19,7 +19,7 @@ sensorRouter.use(Authorize.accesstoken);
 sensorRouter.route('/')
     .post(createSensorHandler)
     .get(findAllSensorHandler);
-sensorRouter.route('/:st_id')
+sensorRouter.route('/:s_id')
     .get(findSensorHandler)
     .patch(updateSensorHandler)
     .delete(deleteSensorHandler);
