@@ -9,7 +9,7 @@ export const createSensorTypeHandler = Route.asyncHandler(async (req, res) => {
     if (st_components && typeof st_components !== 'string') throw new Error(`Failed to create new sensor type [${st_name}]. st_components must be a stringified json object`);
 
     const sensorType = await SensorType.create({ st_name, st_components, gateway_id });
-    if (!sensorType) throw new Error('Failed to create new user');
+    if (!sensorType) throw new Error('Failed to create new sensor type');
 
     res.status(201).json(sensorType);
 });

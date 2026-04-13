@@ -15,7 +15,7 @@ export const createSensorHandler = Route.asyncHandler(async (req, res) => {
     }
 
     const sensor = await Sensor.create({ s_index, s_addr, st_id });
-    if (!sensor) throw new Error('Failed to create new user');
+    if (!sensor) throw new Error('Failed to create new sensor');
 
     res.status(201).json(sensor);
 });
