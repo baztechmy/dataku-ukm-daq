@@ -48,9 +48,9 @@ export const logoutUserHandler = Route.asyncHandler(async (req, res) => {
     const user = req.user as Payload;
     if (!user) throw new Error(`Failed to logout user. User is not logged in`);
 
-    const user_id = user.user_id;
+    const { user_id, user_email } = user;
     const userSecret = await UserSecret.update({ user_refresh_token: null }, { where: { user_id } });
-    if (!userSecret) throw new Error(`Failed to logout user [${user_id}]. Unable to update user refresh token`);
+    if (!userSecret) throw new Error(`Failed to logout user [${user_email}]. Unable to update user refresh token`);
 
-    res.status(200).json({ message: 'Successfully logged out user' });
+    res.status(200).json({ message: `Successfully logged out user [${user_email}]` });
 });
