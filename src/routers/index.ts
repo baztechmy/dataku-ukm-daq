@@ -12,8 +12,8 @@ const router = Router();
 
 router.use('/auth', authenticationRouter)
 router.use('/api/users', userRouter);
+router.use('/api/gateways', gatewayRouter);
 router.use('/api/sensor-types', sensorTypeRouter);
 router.use('/api/sensors', sensorRouter);
-router.use('/api/gateways', gatewayRouter);
 
 export default router;
