@@ -19,6 +19,7 @@ App.listen({
         app.use('/', router);
     },
     callback: async (app, server) => {
+        await db.sync({ alter: false });
     }
 });
 
