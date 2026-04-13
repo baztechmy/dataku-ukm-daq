@@ -38,8 +38,8 @@ export const UserActivityLog = db.define('user_activity_logs', {
 });
 UserActivityLog.setForeignKey(User, 'user_id');
 
-export const Gateway = db.define('user_activity_logs', {
-    gateway_id: { type: DataTypes.SERIAL, allowNull: false, primaryKey: true },
+export const Gateway = db.define('gateways', {
+    gateway_id: { type: DataTypes.VARCHAR(255), allowNull: false, primaryKey: true },
     gateway_status_on: { type: DataTypes.BOOLEAN, allowNull: false }
 });
 
@@ -63,6 +63,6 @@ export const DataLog = db.define('sensor_logs', {
     dl_id: { type: DataTypes.SERIAL, allowNull: false },
     dl_raw_data: { type: DataTypes.SERIAL, allowNull: false },
     dl_date: { type: DataTypes.TIMESTAMP, allowNull: false },
-    gateway_id: { type: DataTypes.INTEGER, allowNull: false }
+    gateway_id: { type: DataTypes.VARCHAR(255), allowNull: false }
 });
 DataLog.setForeignKey(Gateway, 'gateway_id');
