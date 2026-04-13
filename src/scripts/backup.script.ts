@@ -3,7 +3,7 @@ import { User, UserSecret, UserActivityLog, Gateway, SensorType, Sensor, DataLog
 
 (async () => {
     const append = true;
-    const path = './database/dataku-glide-v3.sql';
+    const path = './database/dataku-ukmdaq-v1.sql';
 
     const users = await User.backup(path, { fixSequence: 'user_id', orderBy: { user_id: 'ASC' } });
     if (!users) return;
