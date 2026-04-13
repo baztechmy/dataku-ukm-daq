@@ -11,7 +11,8 @@ function generateDate(year: number, month: number, day: number): string {
 }
 
 export const createDataLogHandler = Route.asyncHandler(async (req, res) => {
-    const { dl_id, dl_raw_data, dl_date, gateway_id } = req.body;
+    const dl_date = new Date();
+    const { dl_id, dl_raw_data, gateway_id } = req.body;
 
     const dataLog = await DataLog.create({ dl_id, dl_raw_data, dl_date, gateway_id });
     if (!dataLog) throw new Error('Failed to create new data log');
