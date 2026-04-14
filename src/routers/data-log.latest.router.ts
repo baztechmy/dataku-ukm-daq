@@ -3,7 +3,7 @@ import { Router } from 'express';
 
 // CONTROLLERS
 import {
-    findAllDataLogByDateHandler
+    findLatestDataLogHandler
 } from '../controllers/data-log.controller';
 
 // MIDDLEWARES
@@ -13,6 +13,6 @@ const dataLogLatestRouter = Router();
 dataLogLatestRouter.use(Authorize.accesstoken);
 
 dataLogLatestRouter.route('/')
-    .get(findAllDataLogByDateHandler);
+    .get(findLatestDataLogHandler);
 
 export default dataLogLatestRouter;
