@@ -19,8 +19,13 @@ export const createUserHandler = Route.asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error('Failed to create new user. User password is required');
     }
+    if (!user_role || typeof user_role !== 'string' || !['admin', 'user'].some(role => user_role.toLowerCase() === role)) {
+        res.status(400);
+        throw new Error('Failed to create new user. Invalid user role');
+    }
+
     const transaction = await db.transaction({ rollbackOnError: true });
-    const user = await User.create({ user_id, user_name, user_email, user_phone, user_role, created_at, updated_at, created_by }, { transaction });
+    const user = await User.create({ user_id, user_name, user_email, user_phone, user_role: user_role.toLowerCase(), created_at, updated_at, created_by }, { transaction });
     if (!user) throw new Error('Failed to create new user');
 
     const userSecret = await UserSecret.create({ user_password: hashSync(user_password, 10), user_id: user.user_id }, { transaction });
