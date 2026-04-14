@@ -35,6 +35,14 @@ export const findAllSensorHandler = Route.asyncHandler(async (req, res) => {
     res.status(200).json(sensors);
 });
 
+export const findAllSensorByTypeHandler = Route.asyncHandler(async (req, res) => {
+    const st_id = +req.params.st_id;
+    const sensors = await Sensor.find({ where: { st_id }, orderBy: { s_id: 'ASC' } });
+    if (!sensors) throw new Error(`Failed to find all sensor by type [${st_id}]`);
+
+    res.status(200).json(sensors);
+});
+
 export const updateSensorHandler = Route.asyncHandler(async (req, res) => {
     const s_id = +req.params.s_id;
     const { s_index, s_addr, st_id } = req.body;

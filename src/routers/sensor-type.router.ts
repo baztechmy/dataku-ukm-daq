@@ -9,6 +9,7 @@ import {
     updateSensorTypeHandler,
     deleteSensorTypeHandler
 } from '../controllers/sensor-type.controller';
+import { findAllSensorByTypeHandler } from '../controllers/sensor.controller';
 
 // MIDDLEWARES
 import Authorize from '../middlewares/authorization.middleware';
@@ -23,5 +24,7 @@ sensorTypeRouter.route('/:st_id')
     .get(findSensorTypeHandler)
     .patch(updateSensorTypeHandler)
     .delete(deleteSensorTypeHandler);
+sensorTypeRouter.route('/:st_id/sensors')
+    .get(findAllSensorByTypeHandler);
 
 export default sensorTypeRouter;
