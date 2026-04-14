@@ -59,7 +59,7 @@ export const Sensor = db.define('sensors', {
 Sensor.setForeignKey(SensorType, 'st_id');
 
 export const DataLog = db.define('data_logs', {
-    dl_id: { type: DataTypes.SERIAL, allowNull: false },
+    dl_id: { type: DataTypes.SERIAL, allowNull: false, primaryKey: true },
     dl_raw_data: { type: DataTypes.TEXT, allowNull: false },
     dl_date: { type: DataTypes.TIMESTAMP, allowNull: false },
     gateway_id: { type: DataTypes.VARCHAR(255), allowNull: false }
