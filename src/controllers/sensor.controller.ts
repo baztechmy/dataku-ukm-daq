@@ -8,7 +8,7 @@ export const createSensorHandler = Route.asyncHandler(async (req, res) => {
     const { s_index, s_addr, st_id } = req.body;
 
     const oldSensor = await Sensor.find({ where: { s_index, st_id } });
-    if (!oldSensor) throw new Error(`Failed to find old sensor with value {s_index: ${s_index}, st_id: ${st_id}}`);
+    if (!oldSensor) throw new Error(`Failed to create new sensor. Unable to find old sensor with value {s_index: ${s_index}, st_id: ${st_id}}`);
     if (oldSensor.length > 0) {
         res.status(409);
         throw new Error(`Failed to create sensor with value {s_index: ${s_index}, st_id: ${st_id}}. Duplicate entry found`);
@@ -48,10 +48,10 @@ export const updateSensorHandler = Route.asyncHandler(async (req, res) => {
     const { s_index, s_addr, st_id } = req.body;
 
     const oldSensor = await Sensor.find({ where: { s_index, st_id } });
-    if (!oldSensor) throw new Error(`Failed to find old sensor with value {s_index: ${s_index}, st_id: ${st_id}}`);
+    if (!oldSensor) throw new Error(`Failed to update sensor [${s_id}]. Unable to find old sensor with value {s_index: ${s_index}, st_id: ${st_id}}`);
     if (oldSensor.length > 0) {
         res.status(409);
-        throw new Error(`Failed to update sensor with value {s_index: ${s_index}, st_id: ${st_id}}. Duplicate entry found`);
+        throw new Error(`Failed to update sensor [${s_id}] with value {s_index: ${s_index}, st_id: ${st_id}}. Duplicate entry found`);
     }
 
     const sensor = await Sensor.updateByPk(s_id, { s_index, s_addr, st_id });
