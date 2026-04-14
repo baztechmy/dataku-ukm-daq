@@ -62,6 +62,12 @@ export const updateUserHandler = Route.asyncHandler(async (req, res) => {
         if (!userSecret) throw new Error(`Failed to update user password [${user_id}]`);
     }
 
+    if (user_role && (typeof user_role !== 'string' || !['admin', 'user'].some(role => user_role.toLowerCase() === role))) {
+        await transaction.rollback()
+        res.status(400);
+        throw new Error('Failed to create new user. Invalid user role');
+    }
+
     const user = await User.updateByPk(user_id, { user_name, user_email, user_phone, user_role, updated_at, created_by }, { transaction });
     if (!user) throw new Error(`Failed to update user [${user_id}]`);
 
