@@ -11,6 +11,14 @@ export const createUserHandler = Route.asyncHandler(async (req, res) => {
     const { user_id, user_name, user_email, user_password, user_phone, user_role, created_by } = req.body;
     const [created_at, updated_at] = [currentDate, currentDate];
 
+    if (!user_email) {
+        res.status(400);
+        throw new Error('Failed to create new user. User email is required');
+    }
+    if (!user_password) {
+        res.status(400);
+        throw new Error('Failed to create new user. User password is required');
+    }
     const transaction = await db.transaction({ rollbackOnError: true });
     const user = await User.create({ user_id, user_name, user_email, user_phone, user_role, created_at, updated_at, created_by }, { transaction });
     if (!user) throw new Error('Failed to create new user');
