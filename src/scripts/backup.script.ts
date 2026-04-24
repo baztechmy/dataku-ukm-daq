@@ -3,7 +3,7 @@ import { User, UserSecret, UserActivityLog, Gateway, SensorType, Sensor, DataLog
 
 (async () => {
     const append = true;
-    const path = './database/dataku-ukm-daq-v1.sql';
+    const path = './database/dataku-ukm-daq-v2.sql';
 
     const users = await User.backup(path, { fixSequence: 'user_id', orderBy: { user_id: 'ASC' } });
     if (!users) return;
@@ -16,6 +16,9 @@ import { User, UserSecret, UserActivityLog, Gateway, SensorType, Sensor, DataLog
 
     const gateway = await Gateway.backup(path, { append });
     if (!gateway) return;
+
+    const gatewayState = await Gateway.backup(path, { append });
+    if (!gatewayState) return;
 
     const sensorType = await SensorType.backup(path, { fixSequence: 'st_id', orderBy: { st_id: 'ASC' }, append });
     if (!sensorType) return;
