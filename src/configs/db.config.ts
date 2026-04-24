@@ -42,9 +42,9 @@ export const Gateway = db.define('gateways', {
 });
 
 export const GatewayState = db.define('gateway_states', {
-    alive: { type: DataTypes.BOOLEAN, allowNull: false },
-    uptime: { type: DataTypes.BIGINT, allowNull: false },
-    rssi_dbm: { type: DataTypes.BIGINT, allowNull: false },
+    alive: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
+    uptime_s: { type: DataTypes.BIGINT, allowNull: false, defaultValue: 0 },
+    rssi_dbm: { type: DataTypes.BIGINT, allowNull: false, defaultValue: 0 },
     updated_at: { type: DataTypes.TIMESTAMP, allowNull: false },
     gateway_id: { type: DataTypes.VARCHAR(255), allowNull: false, unique: true },
 });
