@@ -10,12 +10,12 @@ import {
 // MIDDLEWARES
 import Authorize from '../middlewares/authorization.middleware';
 
-const gatewayRouter = Router();
-gatewayRouter.use(Authorize.accesstoken);
+const gatewayStateRouter = Router();
+gatewayStateRouter.use(Authorize.accesstoken);
 
-gatewayRouter.route('/')
+gatewayStateRouter.route('/')
     .get(findAllGatewayStateHandler);
-gatewayRouter.route('/:gateway_id')
+gatewayStateRouter.route('/:gateway_id')
     .get(findGatewayStateHandler);
 
-export default gatewayRouter;
+export default gatewayStateRouter;
