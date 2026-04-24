@@ -2,14 +2,19 @@
 import Route from "@harrypoggers25/route";
 
 // CONFIGS
-import { Gateway } from "../configs/db.config";
+import { db, Gateway, GatewayState } from "../configs/db.config";
 
 export const createGatewayHandler = Route.asyncHandler(async (req, res) => {
     const { gateway_id } = req.body;
+    const transaction = await db.transaction({ rollbackOnError: true });
 
-    const gateway = await Gateway.create({ gateway_id });
-    if (!gateway) throw new Error('Failed to create new gateway');
+    const gateway = await Gateway.create({ gateway_id }, { transaction });
+    if (!gateway) throw new Error(`Failed to create new gateway [${gateway_id}]`);
 
+    const gatewayState = await GatewayState.create({ updated_at: new Date() }, { transaction });
+    if (!gatewayState) throw new Error(`Failed to create new gateway. Unable to create gateway state [${gateway_id}]`);
+
+    await transaction.commit();
     res.status(201).json(gateway);
 });
 
