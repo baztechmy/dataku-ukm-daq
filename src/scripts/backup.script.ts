@@ -1,5 +1,5 @@
 import ch from "@harrypoggers25/color-utils";
-import { User, UserSecret, UserActivityLog, Gateway, SensorType, Sensor, DataLog } from "../configs/db.config";
+import { User, UserSecret, UserActivityLog, Gateway, GatewayState, SensorType, Sensor, DataLog } from "../configs/db.config";
 
 (async () => {
     const append = true;
@@ -17,7 +17,7 @@ import { User, UserSecret, UserActivityLog, Gateway, SensorType, Sensor, DataLog
     const gateway = await Gateway.backup(path, { append });
     if (!gateway) return;
 
-    const gatewayState = await Gateway.backup(path, { append });
+    const gatewayState = await GatewayState.backup(path, { append });
     if (!gatewayState) return;
 
     const sensorType = await SensorType.backup(path, { fixSequence: 'st_id', orderBy: { st_id: 'ASC' }, append });
