@@ -15,7 +15,9 @@
 | User | /api/users | POST, GET | Admin only |
 | User | /api/users/:user_id | GET, PATCH, DELETE | Admin only, GET/PATCH: or Account owner |
 | Gateway | /api/gateways | POST, GET | |
-| Gateway | /api/gateways/:gateway_id | GET, PATCH, DELETE | |
+| Gateway | /api/gateways/:gateway_id | DELETE | |
+| Gateway state | /api/gateway-states | GET | |
+| Gateway state | /api/gateway-states/:gateway_id | GET | |
 | Sensor type | /api/sensor-types | POST, GET | |
 | Sensor type | /api/sensor-types/:st_id | GET, PATCH, DELETE | |
 | Sensor | /api/sensors | POST, GET | |
