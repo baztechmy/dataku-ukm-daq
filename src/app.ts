@@ -5,7 +5,7 @@ import cookieParser from 'cookie-parser';
 
 // CONFIGS
 import env from "./configs/env.config";
-import { DataLog, db, Gateway } from "./configs/db.config";
+import { DataLog, db, Gateway, GatewayState } from "./configs/db.config";
 
 // APP
 import router from "./routers";
@@ -30,19 +30,41 @@ App.listen({
 
         for (const gateway of gateways) {
             const { gateway_id } = gateway;
-            const topic = `ukmdaq/a7670g/${gateway_id}/sensors`;
 
-            mqttClient.subscribe(topic, async (message) => {
+            const sensorsTopic = `ukmdaq/a7670g/${gateway_id}/sensors`;
+            mqttClient.subscribe(sensorsTopic, async (message) => {
                 try {
+                    const parsedMessage = JSON.parse(message);
+                    const dl_raw_data = JSON.stringify(parsedMessage);
                     const dl_date = new Date();
-                    const dl_raw_data = JSON.parse(message);
                     const dataLog = await DataLog.create({ dl_raw_data, dl_date, gateway_id });
                     if (!dataLog) {
-                        console.log(ch.red(`DATA LOG ERROR:`), 'Failed to insert raw data into database');
+                        console.log(ch.red(`DATA LOG ERROR [${sensorsTopic}]:`), 'Failed to insert raw data into database');
                         return
                     }
                 } catch (error: any) {
-                    console.log(ch.red(`RAW DATA PARSE ERROR ${topic}`), error.message ?? error);
+                    console.log(ch.red(`RAW DATA PARSE ERROR [${sensorsTopic}]:`), error.message ?? error);
+                }
+            });
+
+            const heartBeatTopic = `ukmdaq/a7670g/${gateway_id}/heartbeat`;
+            mqttClient.subscribe(heartBeatTopic, async (message) => {
+                try {
+                    const { alive, uptime_s, rssi_dbm } = JSON.parse(message);
+                    Object.entries({ alive, uptime_s, rssi_dbm }).forEach(([key, val]) => {
+                        if (val === undefined) {
+                            console.log(ch.red(`HEARTBEAT ERROR [${heartBeatTopic}]:`), `Failed to update gateway state. '${key}' is undefined`);
+                            return;
+                        }
+                    });
+
+                    const gatewayState = await GatewayState.update({ alive, uptime_s, rssi_dbm, gateway_id }, { where: { gateway_id } });
+                    if (!gatewayState || !gatewayState.length) {
+                        console.log(ch.red(`HEARTBEAT ERROR [${heartBeatTopic}]:`), 'Failed to update gateway state');
+                        return;
+                    }
+                } catch (error: any) {
+                    console.log(ch.red(`HEARTBEAT PARSE ERROR [${heartBeatTopic}]:`), error.message ?? error);
                 }
             });
         }
