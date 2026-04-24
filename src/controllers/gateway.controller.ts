@@ -5,9 +5,10 @@ import Route from "@harrypoggers25/route";
 import { Gateway } from "../configs/db.config";
 
 export const createGatewayHandler = Route.asyncHandler(async (req, res) => {
-    const { gateway_id, gateway_status_on } = req.body;
+    const { gateway_id, alive, uptime } = req.body;
+    const updated_at = new Date();
 
-    const gateway = await Gateway.create({ gateway_id, gateway_status_on });
+    const gateway = await Gateway.create({ gateway_id, alive, uptime, updated_at });
     if (!gateway) throw new Error('Failed to create new gateway');
 
     res.status(201).json(gateway);
@@ -30,9 +31,10 @@ export const findAllGatewayHandler = Route.asyncHandler(async (req, res) => {
 
 export const updateGatewayHandler = Route.asyncHandler(async (req, res) => {
     const gateway_id = req.params.gateway_id as string;
-    const { gateway_status_on } = req.body;
+    const { alive, uptime } = req.body;
+    const updated_at = new Date();
 
-    const gateway = await Gateway.updateByPk(gateway_id, { gateway_status_on });
+    const gateway = await Gateway.updateByPk(gateway_id, { alive, uptime, updated_at });
     if (!gateway) throw new Error(`Failed to update gateway [${gateway_id}]`);
 
     res.status(200).json(gateway);
