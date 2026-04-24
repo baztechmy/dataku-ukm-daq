@@ -39,11 +39,16 @@ UserActivityLog.setForeignKey(User, 'user_id');
 
 export const Gateway = db.define('gateways', {
     gateway_id: { type: DataTypes.VARCHAR(255), allowNull: false, primaryKey: true },
+});
+
+export const GatewayState = db.define('gateway_states', {
     alive: { type: DataTypes.BOOLEAN, allowNull: false },
     uptime: { type: DataTypes.BIGINT, allowNull: false },
     rssi_dbm: { type: DataTypes.BIGINT, allowNull: false },
     updated_at: { type: DataTypes.TIMESTAMP, allowNull: false },
+    gateway_id: { type: DataTypes.VARCHAR(255), allowNull: false, unique: true },
 });
+GatewayState.setForeignKey(Gateway, 'gateway_id');
 
 export const SensorType = db.define('sensor_types', {
     st_id: { type: DataTypes.SERIAL, allowNull: false, primaryKey: true },
