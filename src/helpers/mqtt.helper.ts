@@ -30,6 +30,14 @@ namespace Mqtt {
             this.connect(config);
         }
 
+        private loadTopic(topic: string) {
+            if (this.unloadedTopics.some(unloadedTopic => unloadedTopic === topic)) {
+                const index = this.unloadedTopics.indexOf(topic);
+                if (index !== -1) this.unloadedTopics.splice(index, 1);
+
+                console.log(ch.green('MQTT SUBSCRIBE:'), `Client subscribed to MQTT topic ${topic}`);
+            }
+        }
         public connect(config: MqttClientConfig) {
             this.config = config;
             this.client = (() => {
@@ -52,12 +60,7 @@ namespace Mqtt {
                     });
 
                     client.on('message', async (topic, message) => {
-                        if (this.unloadedTopics.some(unloadedTopic => unloadedTopic === topic)) {
-                            const index = this.unloadedTopics.indexOf(topic);
-                            if (index !== -1) this.unloadedTopics.splice(index, 1);
-
-                            console.log(ch.green('MQTT SUBSCRIBE:'), `Client subscribed to MQTT topic ${topic}`);
-                        }
+                        this.loadTopic(topic);
 
                         if (this.showMessage) console.log(ch.yellow(`MQTT MESSAGE [${topic}]:`), `Client received message '${message.toString()}'`);
                         await this.subscribedTopicHandlers[topic](message.toString());
@@ -108,6 +111,8 @@ namespace Mqtt {
                     delete this.subscribedTopicHandlers[topic];
                     return;
                 }
+
+                this.loadTopic(topic);
             });
         }
 
