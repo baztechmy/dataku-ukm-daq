@@ -14,7 +14,7 @@ namespace Mqtt {
         private client: mqtt.MqttClient | null;
         private subscribedTopicHandlers: Record<string, (message: string) => Promise<void>>;
         private showMessage: boolean;
-        private newTopics: Array<string>;
+        private unloadedTopics: Array<string>;
 
         constructor(config: MqttClientConfig, options?: MqttClientOptions) {
             options = {
@@ -25,7 +25,7 @@ namespace Mqtt {
             this.client = null;
             this.subscribedTopicHandlers = {};
             this.showMessage = options.showMessage!;
-            this.newTopics = [];
+            this.unloadedTopics = [];
 
             this.connect(config);
         }
@@ -52,9 +52,9 @@ namespace Mqtt {
                     });
 
                     client.on('message', async (topic, message) => {
-                        if (this.newTopics.some(newTopic => newTopic === topic)) {
-                            const index = this.newTopics.indexOf(topic);
-                            if (index !== -1) this.newTopics.splice(index, 1);
+                        if (this.unloadedTopics.some(unloadedTopic => unloadedTopic === topic)) {
+                            const index = this.unloadedTopics.indexOf(topic);
+                            if (index !== -1) this.unloadedTopics.splice(index, 1);
 
                             console.log(ch.green('MQTT SUBSCRIBE:'), `Client subscribed to MQTT topic ${topic}`);
                         }
@@ -95,12 +95,12 @@ namespace Mqtt {
                 console.log(ch.red('MQTT SUBSCRIBE ERROR:'), `Client is already subscribed to the MQTT topic '${topic}'`);
                 return;
             }
-            if (this.newTopics.some(oldTopic => oldTopic === topic)) {
+            if (this.unloadedTopics.some(unloadedTopic => unloadedTopic === topic)) {
                 console.log(ch.red('MQTT TOPIC DUPLICATE:'), `Client is already connecting to the MQTT topic '${topic}'`);
                 return;
             }
 
-            this.newTopics.push(topic);
+            this.unloadedTopics.push(topic);
             this.subscribedTopicHandlers[topic] = handler;
             this.client.subscribe(topic, (error: any) => {
                 if (error) {
