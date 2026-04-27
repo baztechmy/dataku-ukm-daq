@@ -11,6 +11,16 @@ import { DataLog, db, Gateway, GatewayState } from "./configs/db.config";
 import router from "./routers";
 import { mqttClient } from "./configs/mqtt.config";
 
+function parseJson(str: string) {
+    try {
+        const parsedStr = JSON.parse(str);
+        return parsedStr;
+    } catch (error: any) {
+        // console.log(ch.red('JSON PARSE ERROR:'), `Failed to parse '${str}'`);
+        return null;
+    }
+}
+
 App.listen({
     port: env.PORT,
     version: '1.0.0 build 5',
@@ -33,38 +43,41 @@ App.listen({
 
             const sensorsTopic = `ukmdaq/a7670g/${gateway_id}/sensors`;
             mqttClient.subscribe(sensorsTopic, async (message) => {
-                try {
-                    const parsedMessage = JSON.parse(message);
-                    const dl_raw_data = JSON.stringify(parsedMessage);
-                    const dl_date = new Date();
-                    const dataLog = await DataLog.create({ dl_raw_data, dl_date, gateway_id });
-                    if (!dataLog) {
-                        console.log(ch.red(`DATA LOG ERROR [${sensorsTopic}]:`), 'Failed to insert raw data into database');
-                        return
-                    }
-                } catch (error: any) {
-                    console.log(ch.red(`RAW DATA PARSE ERROR [${sensorsTopic}]:`), error.message ?? error);
+                const parsedMessage = parseJson(message);
+                if (!parsedMessage) {
+                    console.log(ch.red(`RAW DATA PARSE ERROR [${sensorsTopic}]:`), `Failed to parse '${message}'`);
+                    return;
+                }
+
+                const dl_raw_data = JSON.stringify(parsedMessage);
+                const dl_date = new Date();
+                const dataLog = await DataLog.create({ dl_raw_data, dl_date, gateway_id });
+                if (!dataLog) {
+                    console.log(ch.red(`DATA LOG ERROR [${sensorsTopic}]:`), 'Failed to insert raw data into database');
+                    return;
                 }
             });
 
             const heartBeatTopic = `ukmdaq/a7670g/${gateway_id}/heartbeat`;
             mqttClient.subscribe(heartBeatTopic, async (message) => {
-                try {
-                    const { alive, uptime_s, rssi_dbm } = JSON.parse(message);
-                    Object.entries({ alive, uptime_s, rssi_dbm }).forEach(([key, val]) => {
-                        if (val === undefined) {
-                            console.log(ch.red(`HEARTBEAT ERROR [${heartBeatTopic}]:`), `Failed to update gateway state. '${key}' is undefined`);
-                            return;
-                        }
-                    });
+                const parsedMessage = parseJson(message);
+                if (!parsedMessage) {
+                    console.log(ch.red(`HEARTBEAT PARSE ERROR [${heartBeatTopic}]:`), `Failed to parse '${message}'`);
+                    return;
+                }
 
-                    const gatewayState = await GatewayState.update({ alive, uptime_s, rssi_dbm, gateway_id }, { where: { gateway_id } });
-                    if (!gatewayState || !gatewayState.length) {
-                        console.log(ch.red(`HEARTBEAT ERROR [${heartBeatTopic}]:`), 'Failed to update gateway state');
+                const { alive, uptime_s, rssi_dbm } = JSON.parse(message);
+                Object.entries({ alive, uptime_s, rssi_dbm }).forEach(([key, val]) => {
+                    if (val === undefined) {
+                        console.log(ch.red(`HEARTBEAT ERROR [${heartBeatTopic}]:`), `Failed to update gateway state. '${key}' is undefined`);
                         return;
                     }
-                } catch (error: any) {
-                    console.log(ch.red(`HEARTBEAT PARSE ERROR [${heartBeatTopic}]:`), error.message ?? error);
+                });
+
+                const gatewayState = await GatewayState.update({ alive, uptime_s, rssi_dbm, gateway_id }, { where: { gateway_id } });
+                if (!gatewayState || !gatewayState.length) {
+                    console.log(ch.red(`HEARTBEAT ERROR [${heartBeatTopic}]:`), 'Failed to update gateway state');
+                    return;
                 }
             });
         }
