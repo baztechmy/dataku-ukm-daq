@@ -16,7 +16,6 @@ function parseJson(str: string) {
         const parsedStr = JSON.parse(str);
         return parsedStr;
     } catch (error: any) {
-        // console.log(ch.red('JSON PARSE ERROR:'), `Failed to parse '${str}'`);
         return null;
     }
 }
