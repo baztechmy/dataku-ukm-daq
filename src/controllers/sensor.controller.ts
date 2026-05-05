@@ -47,7 +47,7 @@ export const findAllSensorByTypeHandler = Route.asyncHandler(async (req, res) =>
 
 export const updateSensorHandler = Route.asyncHandler(async (req, res) => {
     const s_id = +req.params.s_id;
-    const { s_index, s_addr, st_id } = req.body;
+    const { s_index, s_addr, s_threshold_warning, s_threshold_critical, st_id } = req.body;
 
     if ((s_index && !st_id) || (!s_index && st_id)) throw new Error(`Failed to update sensor [${s_id}]. s_index and st_id are required as a pair`);
 
@@ -60,7 +60,7 @@ export const updateSensorHandler = Route.asyncHandler(async (req, res) => {
         }
     }
 
-    const sensor = await Sensor.updateByPk(s_id, { s_index, s_addr, st_id });
+    const sensor = await Sensor.updateByPk(s_id, { s_index, s_addr, s_threshold_warning, s_threshold_critical, st_id });
     if (!sensor) throw new Error(`Failed to update sensor [${s_id}]`);
 
     res.status(200).json(sensor);

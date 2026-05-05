@@ -12,6 +12,7 @@ import {
 
 // MIDDLEWARES
 import Authorize from '../middlewares/authorization.middleware';
+import { validateSensorThresholds } from '../middlewares/validate-sensor-threshold.middleware';
 
 const sensorRouter = Router();
 sensorRouter.use(Authorize.accesstoken);
@@ -21,7 +22,7 @@ sensorRouter.route('/')
     .get(findAllSensorHandler);
 sensorRouter.route('/:s_id')
     .get(findSensorHandler)
-    .patch(updateSensorHandler)
+    .patch(validateSensorThresholds, updateSensorHandler)
     .delete(deleteSensorHandler);
 
 export default sensorRouter;
