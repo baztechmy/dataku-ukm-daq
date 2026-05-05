@@ -51,11 +51,13 @@ export const updateSensorHandler = Route.asyncHandler(async (req, res) => {
 
     if ((s_index && !st_id) || (!s_index && st_id)) throw new Error(`Failed to update sensor [${s_id}]. s_index and st_id are required as a pair`);
 
-    const oldSensor = await Sensor.find({ where: { s_index, st_id } });
-    if (!oldSensor) throw new Error(`Failed to update sensor [${s_id}]. Unable to find old sensor with value {s_index: ${s_index}, st_id: ${st_id}}`);
-    if (oldSensor.length > 0) {
-        res.status(409);
-        throw new Error(`Failed to update sensor [${s_id}] with value {s_index: ${s_index}, st_id: ${st_id}}. Duplicate entry found`);
+    if (s_index && st_id) {
+        const oldSensor = await Sensor.find({ where: { s_index, st_id } });
+        if (!oldSensor) throw new Error(`Failed to update sensor [${s_id}]. Unable to find old sensor with value {s_index: ${s_index}, st_id: ${st_id}}`);
+        if (oldSensor.length > 0) {
+            res.status(409);
+            throw new Error(`Failed to update sensor [${s_id}] with value {s_index: ${s_index}, st_id: ${st_id}}. Duplicate entry found`);
+        }
     }
 
     const sensor = await Sensor.updateByPk(s_id, { s_index, s_addr, st_id });
