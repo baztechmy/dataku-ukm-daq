@@ -58,10 +58,28 @@ export const SensorType = db.define('sensor_types', {
 });
 SensorType.setForeignKey(Gateway, 'gateway_id')
 
+export type SensorThreshold = { threshold: number, symbol: '>=' | '>' | '<=' | '<' | '==' | '!=' };
+export const verifySensorThreshold = (obj: SensorThreshold | Array<SensorThreshold> | null): { valid: boolean, message: string, result: null | string } => {
+    if (obj === null) return { valid: true, message: 'OK', result: null };
+    try {
+        const sensorThresholds: Array<SensorThreshold> = !Array.isArray(obj) ? [obj] : obj;
+        for (let i = 0; i < 2 && i < sensorThresholds.length; i++) {
+            const st = sensorThresholds[i];
+            if (Number.isNaN(+st.threshold)) throw new Error(`Threshold '${st.threshold}' is invalid. Threshold must be of type number`);
+            if (!['>=', '>', '<=', '<', '==', '!='].includes(st.symbol)) throw new Error(`Symbol '${st.symbol}' is invalid. Symbol must be either:  '>=', '>', '<=', '<', '==' or '!='`);
+        }
+
+        return { valid: true, message: 'OK', result: JSON.stringify(sensorThresholds) };
+    } catch (error: any) {
+        return { valid: false, message: error.message ?? error, result: null };
+    }
+}
 export const Sensor = db.define('sensors', {
     s_id: { type: DataTypes.SERIAL, allowNull: false, primaryKey: true },
     s_index: { type: DataTypes.INTEGER, allowNull: false }, // s_id can be duplicate for different st_id, but not for the same st_id
     s_addr: { type: DataTypes.INTEGER, allowNull: false },
+    s_threshold_warning: { type: DataTypes.TEXT, allowNull: true },
+    s_threshold_critical: { type: DataTypes.TEXT, allowNull: true },
     st_id: { type: DataTypes.INTEGER, allowNull: false }
 });
 Sensor.setForeignKey(SensorType, 'st_id');
