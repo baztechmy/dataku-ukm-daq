@@ -11,7 +11,7 @@ export const createGatewayHandler = Route.asyncHandler(async (req, res) => {
     const gateway = await Gateway.create({ gateway_id }, { transaction });
     if (!gateway) throw new Error(`Failed to create new gateway [${gateway_id}]`);
 
-    const gatewayState = await GatewayState.create({ updated_at: new Date() }, { transaction });
+    const gatewayState = await GatewayState.create({ updated_at: new Date(), gateway_id }, { transaction });
     if (!gatewayState) throw new Error(`Failed to create new gateway. Unable to create gateway state [${gateway_id}]`);
 
     await transaction.commit();
