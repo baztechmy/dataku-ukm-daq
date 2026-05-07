@@ -64,6 +64,7 @@ export const Sensor = db.define('sensors', {
     s_addr: { type: DataTypes.INTEGER, allowNull: false },
     s_threshold_warning: { type: DataTypes.TEXT, allowNull: true },
     s_threshold_critical: { type: DataTypes.TEXT, allowNull: true },
+    s_threshold_active: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
     st_id: { type: DataTypes.INTEGER, allowNull: false }
 });
 Sensor.setForeignKey(SensorType, 'st_id');
