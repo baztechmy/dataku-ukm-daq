@@ -22,7 +22,7 @@ function parseJson(str: string) {
 
 App.listen({
     port: env.PORT,
-    version: '1.0.0 build 7',
+    version: '1.0.0 build 8',
     cors: [env.ORIGIN_URL],
     beforeListen: async (app) => {
         app.use(cookieParser());
