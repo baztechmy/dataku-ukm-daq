@@ -5,20 +5,14 @@ import cookieParser from 'cookie-parser';
 
 // CONFIGS
 import env from "./configs/env.config";
-import { DataLog, db, Gateway, GatewayState } from "./configs/db.config";
+import { db, DataLog, Gateway, GatewayState } from "./configs/db.config";
+
+// HELPERS
+import { parseJson } from "./helpers/mqtt.helper";
 
 // APP
 import router from "./routers";
 import { mqttClient } from "./configs/mqtt.config";
-
-function parseJson(str: string) {
-    try {
-        const parsedStr = JSON.parse(str);
-        return parsedStr;
-    } catch (error: any) {
-        return null;
-    }
-}
 
 App.listen({
     port: env.PORT,

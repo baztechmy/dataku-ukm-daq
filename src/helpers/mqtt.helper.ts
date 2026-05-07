@@ -139,3 +139,12 @@ namespace Mqtt {
 }
 
 export default Mqtt;
+
+export function parseJson(str: string) {
+    try {
+        const parsedStr = JSON.parse(str);
+        return parsedStr;
+    } catch (error: any) {
+        return null;
+    }
+}
