@@ -4,23 +4,10 @@ import Route from "@harrypoggers25/route";
 // CONFIGS
 import { SensorType } from "../configs/db.config";
 
-// LOCAL FUNCTIONS
-function isValidJSON(str: string) {
-    try {
-        JSON.parse(str);
-        return true;
-    } catch (error: any) {
-        return false
-    }
-}
-
 export const createSensorTypeHandler = Route.asyncHandler(async (req, res) => {
-    const { st_name, st_components, gateway_id } = req.body;
-    if (st_components && (typeof st_components !== 'string' || !isValidJSON(st_components))) {
-        throw new Error(`Failed to create new sensor type [${st_name}]. st_components must be a valid stringified json object`);
-    }
+    const { st_name, gateway_id } = req.body;
 
-    const sensorType = await SensorType.create({ st_name, st_components, gateway_id });
+    const sensorType = await SensorType.create({ st_name, gateway_id });
     if (!sensorType) throw new Error('Failed to create new sensor type');
 
     res.status(201).json(sensorType);
@@ -43,12 +30,9 @@ export const findAllSensorTypeHandler = Route.asyncHandler(async (req, res) => {
 
 export const updateSensorTypeHandler = Route.asyncHandler(async (req, res) => {
     const st_id = +req.params.st_id;
-    const { st_name, st_components, gateway_id } = req.body;
-    if (st_components && (typeof st_components !== 'string' || !isValidJSON(st_components))) {
-        throw new Error(`Failed to update sensor type [${st_name}]. st_components must be a valid stringified json object`);
-    }
+    const { st_name, gateway_id } = req.body;
 
-    const sensorType = await SensorType.updateByPk(st_id, { st_name, st_components, gateway_id });
+    const sensorType = await SensorType.updateByPk(st_id, { st_name, gateway_id });
     if (!sensorType) throw new Error(`Failed to update sensor type [${st_id}]`);
 
     res.status(200).json(sensorType);

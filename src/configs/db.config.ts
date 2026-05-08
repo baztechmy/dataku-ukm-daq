@@ -53,7 +53,6 @@ GatewayState.setForeignKey(Gateway, 'gateway_id');
 export const SensorType = db.define('sensor_types', {
     st_id: { type: DataTypes.SERIAL, allowNull: false, primaryKey: true },
     st_name: { type: DataTypes.VARCHAR(255), allowNull: false, unique: true },
-    st_components: { type: DataTypes.TEXT, allowNull: false, defaultValue: "[]" },
     gateway_id: { type: DataTypes.VARCHAR(255), allowNull: false }
 });
 SensorType.setForeignKey(Gateway, 'gateway_id')
