@@ -59,8 +59,8 @@ SensorType.setForeignKey(Gateway, 'gateway_id')
 
 export const Sensor = db.define('sensors', {
     s_id: { type: DataTypes.SERIAL, allowNull: false, primaryKey: true },
-    s_index: { type: DataTypes.INTEGER, allowNull: false }, // s_id can be duplicate for different st_id, but not for the same st_id
     s_addr: { type: DataTypes.INTEGER, allowNull: false },
+    s_name: { type: DataTypes.VARCHAR(255), allowNull: false },
     s_threshold_warning: { type: DataTypes.TEXT, allowNull: true },
     s_threshold_critical: { type: DataTypes.TEXT, allowNull: true },
     s_threshold_active: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
