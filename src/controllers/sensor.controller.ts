@@ -2,15 +2,31 @@
 import Route from "@harrypoggers25/route";
 
 // CONFIGS
-import { Sensor } from "../configs/db.config";
+import { db, Sensor, SensorType } from "../configs/db.config";
 
 export const createSensorHandler = Route.asyncHandler(async (req, res) => {
-    const { s_addr, s_name, st_id } = req.body;
+    const { s_addr, st_id } = req.body;
 
-    const sensor = await Sensor.create({ s_name, s_addr, st_id });
-    if (!sensor) throw new Error('Failed to create new sensor');
+    const sensorType = await SensorType.findByPk(st_id);
+    if (!sensorType) throw new Error(`Failed to create new sensor. Unable to retrieve sensor type [${st_id}]`);
 
-    res.status(201).json(sensor);
+    const { s_names } = sensorType;
+    if (!Array.isArray(JSON.parse(s_names))) throw new Error('Failed to create new sensor. s_names must be of type array');
+
+    const transaction = await db.transaction({ rollbackOnError: true });
+    const deletedSensors = await Sensor.delete({ where: { s_addr }, transaction });
+    if (!deletedSensors) throw new Error(`Failed to create now sensor. Unable to delete old sensors ${JSON.stringify({ s_addr })}`);
+
+    const sensors = [];
+    for (const s_name of JSON.parse(s_names)) {
+        const sensor = await Sensor.create({ s_addr, s_name, st_id }, { transaction });
+        if (!sensor) throw new Error('Failed to create new sensor');
+
+        sensors.push(sensor);
+    }
+
+    await transaction.commit();
+    res.status(201).json(sensors);
 });
 
 export const findSensorHandler = Route.asyncHandler(async (req, res) => {
