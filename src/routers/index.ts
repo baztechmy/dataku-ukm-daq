@@ -4,6 +4,7 @@ import { Router } from "express";
 // ROUTERS
 import userRouter from "./user.router";
 import authenticationRouter from "./authentication.router";
+import sensorAddressRouter from "./sensor-address.router";
 import sensorTypeRouter from "./sensor-type.router";
 import sensorRouter from "./sensor.router";
 import gatewayRouter from "./gateway.router";
@@ -17,6 +18,7 @@ router.use('/auth', authenticationRouter)
 router.use('/api/users', userRouter);
 router.use('/api/gateways', gatewayRouter);
 router.use('/api/gateway-states', gatewayStateRouter);
+router.use('/api/sensor-address', sensorAddressRouter);
 router.use('/api/sensor-types', sensorTypeRouter);
 router.use('/api/sensors', sensorRouter);
 router.use('/api/data-logs', dataLogRouter);

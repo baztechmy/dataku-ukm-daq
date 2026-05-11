@@ -44,6 +44,14 @@ export const findAllSensorHandler = Route.asyncHandler(async (req, res) => {
     res.status(200).json(sensors);
 });
 
+export const findAllSensorByAddressHandler = Route.asyncHandler(async (req, res) => {
+    const s_addr = +req.params.s_addr;
+    const sensors = await Sensor.find({ where: { s_addr }, orderBy: { s_id: 'ASC' } });
+    if (!sensors) throw new Error(`Failed to find all sensor by address ${JSON.stringify({ s_addr })}`);
+
+    res.status(200).json(sensors);
+});
+
 export const findAllSensorByTypeHandler = Route.asyncHandler(async (req, res) => {
     const st_id = +req.params.st_id;
     const sensors = await Sensor.find({ where: { st_id }, orderBy: { s_id: 'ASC' } });
