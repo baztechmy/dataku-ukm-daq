@@ -23,6 +23,7 @@
 | Sensor | /api/sensors | POST, GET | |
 | Sensor | /api/sensors/:s_id | GET, PATCH, DELETE | |
 | Sensor | /api/sensor-types/st_id/sensors | GET | |
+| Sensor | /api/sensor-address/s_addr/sensors | GET | |
 | Data log | /api/data-logs | POST, GET | |
 | Data log | /api/data-logs/:dl_id | DELETE | |
 | Data log | /api/data-logs/date/:dl_year/:dl_month | GET | |
