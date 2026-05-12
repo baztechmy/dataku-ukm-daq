@@ -5,9 +5,9 @@ import Route from "@harrypoggers25/route";
 import { SensorType } from "../configs/db.config";
 
 export const createSensorTypeHandler = Route.asyncHandler(async (req, res) => {
-    const { st_name, gateway_id } = req.body;
+    const { st_name, s_names, gateway_id } = req.body;
 
-    const sensorType = await SensorType.create({ st_name, gateway_id });
+    const sensorType = await SensorType.create({ st_name, s_names, gateway_id });
     if (!sensorType) throw new Error('Failed to create new sensor type');
 
     res.status(201).json(sensorType);

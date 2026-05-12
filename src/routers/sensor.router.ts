@@ -12,7 +12,7 @@ import {
 
 // MIDDLEWARES
 import Authorize from '../middlewares/authorization.middleware';
-import { validateSensorThresholds } from '../middlewares/validate-sensor-threshold.middleware';
+import { validateSensorThresholds } from '../middlewares/validate-sensor.middleware';
 
 const sensorRouter = Router();
 sensorRouter.use(Authorize.accesstoken);

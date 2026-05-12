@@ -34,3 +34,8 @@ export const validateSensorThresholds = Route.asyncHandler(async (req, res, next
 
     next();
 });
+
+// const validateSensorNames = Route.asyncHandler(async (req, res, next) => {
+//     const { s_names } = req.body;
+//     if (s_names)
+// })
