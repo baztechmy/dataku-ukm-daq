@@ -13,16 +13,17 @@ import { findAllSensorByTypeHandler } from '../controllers/sensor.controller';
 
 // MIDDLEWARES
 import Authorize from '../middlewares/authorization.middleware';
+import { validateSensorNames } from '../middlewares/validate-sensor.middleware';
 
 const sensorTypeRouter = Router();
 sensorTypeRouter.use(Authorize.accesstoken);
 
 sensorTypeRouter.route('/')
-    .post(createSensorTypeHandler)
+    .post(validateSensorNames, createSensorTypeHandler)
     .get(findAllSensorTypeHandler);
 sensorTypeRouter.route('/:st_id')
     .get(findSensorTypeHandler)
-    .patch(updateSensorTypeHandler)
+    .patch(validateSensorNames, updateSensorTypeHandler)
     .delete(deleteSensorTypeHandler);
 sensorTypeRouter.route('/:st_id/sensors')
     .get(findAllSensorByTypeHandler);

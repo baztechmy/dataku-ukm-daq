@@ -1,4 +1,5 @@
 import Route from "@harrypoggers25/route";
+import { parseJson, stringifyJson } from "../helpers/mqtt.helper";
 
 type SensorThreshold = { threshold: number, symbol: '>=' | '>' | '<=' | '<' | '==' | '!=' };
 const verifySensorThreshold = (obj: SensorThreshold | Array<SensorThreshold> | null): { valid: boolean, message: string, result: null | string } => {
@@ -35,7 +36,16 @@ export const validateSensorThresholds = Route.asyncHandler(async (req, res, next
     next();
 });
 
-// const validateSensorNames = Route.asyncHandler(async (req, res, next) => {
-//     const { s_names } = req.body;
-//     if (s_names)
-// })
+export const validateSensorNames = Route.asyncHandler(async (req, res, next) => {
+    const { s_names } = req.body;
+
+    if (!s_names) {
+        next();
+        return;
+    }
+
+    if (!Array.isArray(s_names)) throw new Error(`Failed to validate sensor names. s_name must be an array object`);
+
+    req.body.s_names = stringifyJson(s_names);
+    next();
+})
