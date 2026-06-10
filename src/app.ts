@@ -67,7 +67,8 @@ App.listen({
                     }
                 });
 
-                const gatewayState = await GatewayState.update({ alive, uptime_s, rssi_dbm, gateway_id }, { where: { gateway_id } });
+                const updated_at = new Date();
+                const gatewayState = await GatewayState.update({ alive, uptime_s, rssi_dbm, updated_at, gateway_id }, { where: { gateway_id } });
                 if (!gatewayState || !gatewayState.length) {
                     console.log(ch.red(`HEARTBEAT ERROR [${heartBeatTopic}]:`), 'Failed to update gateway state');
                     return;
