@@ -13,6 +13,7 @@ import { parseJson } from "./helpers/mqtt.helper";
 // APP
 import router from "./routers";
 import { mqttClient } from "./configs/mqtt.config";
+import { cleanObject } from "./helpers/data.helper";
 
 App.listen({
     port: env.PORT,
@@ -41,6 +42,8 @@ App.listen({
                     console.log(ch.red(`RAW DATA PARSE ERROR [${sensorsTopic}]:`), `Failed to parse '${message}'`);
                     return;
                 }
+
+                cleanObject(parsedMessage, ['conductivity_us_cm']); // Fields that will be recursively removed from stored raw data
 
                 const dl_raw_data = JSON.stringify(parsedMessage);
                 const dl_date = new Date();
