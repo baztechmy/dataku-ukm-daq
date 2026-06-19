@@ -29,3 +29,20 @@ export function cleanObject(
 
     visit(obj);
 }
+export function hasKey(obj: any, targetKey: string): boolean {
+    if (obj == null || typeof obj !== "object") return false;
+
+    for (const key of Object.keys(obj)) {
+        if (key === targetKey) return true;
+
+        const value = obj[key];
+
+        if (typeof value === "object" && value !== null) {
+            if (hasKey(value, targetKey)) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
