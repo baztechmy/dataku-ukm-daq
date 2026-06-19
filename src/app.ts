@@ -22,7 +22,7 @@ App.listen({
         app.use(cookieParser());
         app.use('/', router);
     },
-    callback: async (app, server) => {
+    callback: async () => {
         await db.sync({ alter: false });
 
         const gateways = await Gateway.find();
